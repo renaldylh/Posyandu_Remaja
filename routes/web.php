@@ -54,6 +54,7 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
         ->parameters(['peserta' => 'peserta'])
         ->except(['show']);
     Route::get('pemeriksaan/export', [PemeriksaanController::class, 'export'])->name('pemeriksaan.export');
+    Route::get('pemeriksaan/export-pdf', [PemeriksaanController::class, 'exportPdf'])->name('pemeriksaan.export-pdf');
     Route::resource('pemeriksaan', PemeriksaanController::class)->except(['show']);
 });
 

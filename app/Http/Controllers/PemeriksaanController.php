@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Exports\PemeriksaanExport;
 use App\Models\Pemeriksaan;
 use App\Models\Peserta;
+use Dompdf\Dompdf;
+use Dompdf\Options;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -63,6 +65,39 @@ class PemeriksaanController extends Controller
             'tanggal_mulai',
             'tanggal_selesai',
         ])), $filename);
+    }
+
+    public function exportPdf(Request $request)
+    {
+        $filters = $request->only([
+            'search',
+            'jenis_kelamin',
+            'umur_min',
+            'umur_max',
+            'tanggal_mulai',
+            'tanggal_selesai',
+        ]);
+
+        $data = (new PemeriksaanExport($filters))->collection();
+
+        $html = view('admin.pemeriksaan.export_pdf', [
+            'data' => $data,
+        ])->render();
+
+        $options = new Options();
+        $options->set('isHtml5ParserEnabled', true);
+        $options->set('isRemoteEnabled', true);
+
+        $dompdf = new Dompdf($options);
+        $dompdf->loadHtml($html);
+        $dompdf->setPaper('A4', 'landscape');
+        $dompdf->render();
+
+        $filename = 'rekap_pemeriksaan_' . now()->format('Ymd_His') . '.pdf';
+
+        return response()->streamDownload(function () use ($dompdf) {
+            echo $dompdf->output();
+        }, $filename, ['Content-Type' => 'application/pdf']);
     }
 
     public function create(): View

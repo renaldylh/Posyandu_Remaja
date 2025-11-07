@@ -10,6 +10,9 @@
             <a href="{{ route('admin.pemeriksaan.export', array_filter($filters ?? [])) }}" class="btn btn-outline-success">
                 <i class="bi bi-download"></i> Download Rekap (Excel)
             </a>
+            <a href="{{ route('admin.pemeriksaan.export-pdf', array_filter($filters ?? [])) }}" class="btn btn-outline-danger">
+                <i class="bi bi-file-earmark-pdf"></i> Download Rekap (PDF)
+            </a>
             <a href="{{ route('admin.pemeriksaan.create') }}" class="btn btn-success">
                 <i class="bi bi-plus-circle"></i> Tambah Pemeriksaan
             </a>
