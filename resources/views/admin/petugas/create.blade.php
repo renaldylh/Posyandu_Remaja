@@ -24,7 +24,7 @@
         </div>
         <div class="col-md-6">
             <label class="form-label">Posisi</label>
-            <input type="text" name="posisi" value="{{ old('posisi') }}" class="form-control @error('posisi') is-invalid @enderror" placeholder="Contoh: Pendaftaran" required>
+            <input type="text" name="posisi" value="{{ old('posisi') }}" class="form-control @error('posisi') is-invalid @enderror" placeholder="Contoh: Bidan" required>
             @error('posisi')
                 <div class="invalid-feedback">{{ $message }}</div>
             @enderror
