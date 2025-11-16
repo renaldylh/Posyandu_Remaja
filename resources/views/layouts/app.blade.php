@@ -136,16 +136,14 @@
                 <p class="footer-copy">&copy;2025</p>
             </div>
 
-            <!-- Sosial Media -->
+            <!-- Tips Kesehatan -->
             <div class="footer-social">
-                <p>Ikuti Kami :</p>
-                <div class="social-icons">
-                    <a href="#"><i class="bi bi-instagram"></i></a>
-                    <a href="#"><i class="bi bi-facebook"></i></a>
-                    <a href="#"><i class="bi bi-x"></i></a>
-                    <a href="#"><i class="bi bi-youtube"></i></a>
-                    <a href="#"><i class="bi bi-tiktok"></i></a>
-                </div>
+                <p><strong>Motivasi Kesehatan:</strong></p>
+                <p style="font-size: 14px; line-height: 1.4;">
+                    "Pencegahan diabetes lebih baik dari pengobatan. <br>
+                    Pola hidup sehat hari ini, investasi kesehatan untuk masa depan."<br>
+                    <small>— Cek risiko diabetes Anda sekarang!</small>
+                </p>
             </div>
             <!-- <p class="mb-1" style="color: #000;">
                 &copy; 2024 Posyandu Remaja Cinta Sehat Desa Kuta
