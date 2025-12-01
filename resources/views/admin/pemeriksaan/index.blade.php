@@ -7,15 +7,34 @@
     <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-3">
         <h5 class="mb-0">Daftar Pemeriksaan</h5>
         <div class="d-flex gap-2">
-            <a href="{{ route('admin.pemeriksaan.export', array_filter($filters ?? [])) }}" class="btn btn-outline-success">
-                <i class="bi bi-download"></i> Download Rekap (Excel)
-            </a>
-            <a href="{{ route('admin.pemeriksaan.export-pdf', array_filter($filters ?? [])) }}" class="btn btn-outline-danger">
-                <i class="bi bi-file-earmark-pdf"></i> Download Rekap (PDF)
-            </a>
+            <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#downloadModal">
+                <i class="bi bi-download"></i> Download Rekap Full
+            </button>
             <a href="{{ route('admin.pemeriksaan.create') }}" class="btn btn-success">
                 <i class="bi bi-plus-circle"></i> Tambah Pemeriksaan
             </a>
+        </div>
+    </div>
+
+    <!-- Download Modal -->
+    <div class="modal fade" id="downloadModal" tabindex="-1" aria-labelledby="downloadModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="downloadModalLabel">Pilih Format Download</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="d-grid gap-2">
+                        <a href="{{ route('admin.pemeriksaan.export', array_filter($filters ?? [])) }}" class="btn btn-success">
+                            <i class="bi bi-file-earmark-excel"></i> Download Excel
+                        </a>
+                        <a href="{{ route('admin.pemeriksaan.export-pdf', array_filter($filters ?? [])) }}" class="btn btn-danger">
+                            <i class="bi bi-file-earmark-pdf"></i> Download PDF
+                        </a>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -39,7 +58,7 @@
             </div>
             <div class="col-md-2">
                 <label class="form-label">Umur Max</label>
-                <input type="number" name="umur_max" value="{{ $filters['umur_max'] ?? '' }}" min="0" max="120" class="form-control" placeholder="120">
+                <input type="number" name="umur_max" value="{{ $filters['umur_max'] ?? '' }}" min="0" max="120" class="form-control" placeholder="19">
             </div>
             <div class="col-md-3">
                 <label class="form-label">Rentang Tanggal Pemeriksaan</label>
@@ -49,11 +68,14 @@
                     <input type="date" name="tanggal_selesai" value="{{ $filters['tanggal_selesai'] ?? '' }}" class="form-control">
                 </div>
             </div>
-            <div class="col-md-2 d-flex gap-2">
-                <button type="submit" class="btn btn-primary w-100">Filter</button>
-                <a href="{{ route('admin.pemeriksaan.index') }}" class="btn btn-outline-secondary" title="Reset filter">
+            <div class="col-md-4 d-flex gap-2">
+                <button type="submit" class="btn btn-primary btn-sm text-center">Filter</button>
+                <a href="{{ route('admin.pemeriksaan.index') }}" class="btn btn-outline-secondary btn-sm text-center" title="Reset filter">
                     Reset
                 </a>
+                <button type="button" class="btn btn-outline-danger btn-sm text-center" onclick="downloadFilteredPDF()">
+                    <i class="bi bi-file-earmark-pdf"></i> Download Filter (PDF)
+                </button>
             </div>
         </div>
     </form>
@@ -83,7 +105,11 @@
             </thead>
             <tbody>
                 @forelse ($pemeriksaan as $index => $row)
-                    <tr>
+                    @php
+                        $umur = optional($row->peserta)->umur;
+                        $rowClass = ($umur < 10 && $umur > 19) ? 'table-warning' : '';
+                    @endphp
+                    <tr class="{{ $rowClass }}">
                         <td class="d-flex justify-content-center gap-2">
                             <a href="{{ route('admin.pemeriksaan.edit', $row) }}" class="btn btn-sm btn-warning">
                                 <i class="bi bi-pencil-square"></i>
@@ -122,4 +148,22 @@
         {{ $pemeriksaan->links() }}
     </div>
 </div>
+
+<script>
+function downloadFilteredPDF() {
+    const form = document.querySelector('form[method="GET"]');
+    const formData = new FormData(form);
+    const params = new URLSearchParams();
+    
+    // Add all filter parameters
+    for (let [key, value] of formData.entries()) {
+        if (value.trim() !== '') {
+            params.append(key, value);
+        }
+    }
+    
+    // Redirect to PDF export with filter parameters
+    window.location.href = `{{ route('admin.pemeriksaan.export-pdf') }}?${params.toString()}`;
+}
+</script>
 @endsection

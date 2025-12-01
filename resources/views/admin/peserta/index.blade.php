@@ -31,7 +31,7 @@
             </div>
             <div class="col-md-2">
                 <label class="form-label">Umur Max</label>
-                <input type="number" name="umur_max" value="{{ $filters['umur_max'] ?? '' }}" min="0" max="120" class="form-control" placeholder="120">
+                <input type="number" name="umur_max" value="{{ $filters['umur_max'] ?? '' }}" min="0" max="120" class="form-control" placeholder="19">
             </div>
             <div class="col-md-2 d-flex gap-2">
                 <button type="submit" class="btn btn-primary w-100">Filter</button>
