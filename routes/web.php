@@ -43,10 +43,11 @@ use App\Http\Controllers\DashboardAdminController;
 use App\Http\Controllers\PetugasController;
 use App\Http\Controllers\PesertaController;
 use App\Http\Controllers\PemeriksaanController;
+use App\Http\Controllers\UserController;
 use App\Http\Controllers\Auth\LoginController;
 
 Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
-    Route::get('/dashboard', [DashboardAdminController::class, 'index'])->name('dashboard');
+    Route::get('/', [DashboardAdminController::class, 'index'])->name('dashboard');
     Route::resource('petugas', PetugasController::class)
         ->parameters(['petugas' => 'petugas'])
         ->except(['show']);
@@ -56,6 +57,7 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
     Route::get('pemeriksaan/export', [PemeriksaanController::class, 'export'])->name('pemeriksaan.export');
     Route::get('pemeriksaan/export-pdf', [PemeriksaanController::class, 'exportPdf'])->name('pemeriksaan.export-pdf');
     Route::resource('pemeriksaan', PemeriksaanController::class)->except(['show']);
+    Route::resource('users', UserController::class)->except(['show']);
 });
 
 // Handle login POST

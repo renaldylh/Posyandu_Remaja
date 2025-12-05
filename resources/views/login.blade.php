@@ -101,6 +101,7 @@
                 <input type="password" class="form-control" name="password" placeholder="Password" required>
             </div>
             <button type="submit" class="btn btn-login">Login</button>
+            <a href="{{ route('home') }}" class="btn btn-secondary w-100 mt-2" style="border-radius: 10px; padding: 10px;">Back to Landing Page</a>
         </form>
     </div>
 

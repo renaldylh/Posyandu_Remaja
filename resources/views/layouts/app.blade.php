@@ -89,20 +89,7 @@
   <body>
     <nav class="navbar navbar-light bg-light fixed-top">
         <div class="container-fluid">
-            <div class="dropdown">
-            <a class="navbar-brand dropdown-toggle" href="#" id="menuDropdown" data-bs-toggle="dropdown" aria-expanded="false" style="font-size: 18px;">
-                <i class="bi bi-list" style="font-size: 34px;"></i>
-            </a>
-            <ul class="dropdown-menu" aria-labelledby="menuDropdown">
-                <li><a class="dropdown-item" href="{{ route('kunjungan') }}">Kunjungan</a></li>
-                <li><a class="dropdown-item" href="{{ route('gizi') }}">Giji</a></li>
-                <li><a class="dropdown-item" href="{{ route('anemia') }}">Anemia</a></li>
-                <li><a class="dropdown-item" href="{{ route('tekanan-darah') }}">Tekanan Darah</a></li>
-                <li><a class="dropdown-item" href="{{ route('gula-darah') }}">Gula Darah</a></li>
-            </ul>
-            </div>
-
-            <form class="d-flex align-items-center">
+            <form class="d-flex align-items-center ms-auto">
             <a class="nav-link active" aria-current="page" href="{{ route('home') }}" style="color: #000; font-weight: bold;">Home</a>
             <a class="nav-link active" aria-current="page" href="{{ route('prediksi') }}" style="color: #000; font-weight: bold;">Prediksi Diabetes</a>
             <a class="nav-link ms-3" href="{{ route('login') }}" style="background-color: rgba(4, 109, 55, 0.65); border-radius: 50px; color: #fff; font-weight: bold; padding: 5px 15px;">Login</a>

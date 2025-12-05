@@ -63,6 +63,9 @@
         <a href="{{ route('admin.petugas.index') }}" class="{{ request()->routeIs('admin.petugas.*') ? 'active' : '' }}">
             <i class="bi bi-person-badge"></i> Daftar Petugas
         </a>
+        <a href="{{ route('admin.users.index') }}" class="{{ request()->routeIs('admin.users.*') ? 'active' : '' }}">
+            <i class="bi bi-people-fill"></i> Management User
+        </a>
         <a href="{{ route('admin.pemeriksaan.index') }}" class="{{ request()->routeIs('admin.pemeriksaan.*') ? 'active' : '' }}">
             <i class="bi bi-clipboard-data"></i> Daftar Pemeriksaan
         </a>

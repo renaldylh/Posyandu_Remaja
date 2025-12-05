@@ -47,7 +47,7 @@
                 <i class="bi bi-person-lines-fill text-danger card-icon me-3"></i>
                 <div>
                     <h6 class="mb-1">TOTAL BIDAN</h6>
-                    <h4>{{ $totalPendaftaran }} BIDAN</h4>
+                    <h4>{{ $totalBidan }} BIDAN</h4>
                 </div>
             </div>
         </div>
@@ -59,7 +59,7 @@
                 <i class="bi bi-clipboard-check text-purple card-icon me-3"></i>
                 <div>
                     <h6 class="mb-1">TOTAL ADMIN</h6>
-                    <h4>{{ $totalPencatatan }} ADMIN</h4>
+                    <h4>{{ $totalAdmin }} ADMIN</h4>
                 </div>
             </div>
         </div>
@@ -71,7 +71,7 @@
                 <i class="bi bi-bar-chart-line text-indigo card-icon me-3"></i>
                 <div>
                     <h6 class="mb-1">TOTAL KADER</h6>
-                    <h4>{{ $totalPelaporan }} KADER</h4>
+                    <h4>{{ $totalKader }} KADER</h4>
                 </div>
             </div>
         </div>

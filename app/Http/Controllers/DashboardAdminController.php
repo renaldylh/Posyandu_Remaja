@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Pemeriksaan;
 use App\Models\Peserta;
 use App\Models\Petugas;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\View\View;
 
@@ -18,9 +19,9 @@ class DashboardAdminController extends Controller
         $totalLaki = Peserta::where('jenis_kelamin', 'Laki-laki')->count();
         $totalPerempuan = Peserta::where('jenis_kelamin', 'Perempuan')->count();
 
-        $totalPendaftaran = Petugas::where('posisi', 'Pendaftaran')->count();
-        $totalPencatatan = Petugas::where('posisi', 'Pencatatan')->count();
-        $totalPelaporan = Petugas::where('posisi', 'Pelaporan')->count();
+        $totalBidan = User::where('role', 'BIDAN')->count();
+        $totalAdmin = User::where('role', 'ADMIN')->count();
+        $totalKader = User::where('role', 'KADER')->count();
 
         $pemeriksaanHariIni = Pemeriksaan::whereDate('tanggal_pemeriksaan', $now->toDateString())->count();
         $pemeriksaanBulanIni = Pemeriksaan::whereYear('tanggal_pemeriksaan', $now->year)
@@ -32,9 +33,9 @@ class DashboardAdminController extends Controller
             'totalPeserta',
             'totalLaki',
             'totalPerempuan',
-            'totalPendaftaran',
-            'totalPencatatan',
-            'totalPelaporan',
+            'totalBidan',
+            'totalAdmin',
+            'totalKader',
             'pemeriksaanHariIni',
             'pemeriksaanBulanIni',
             'pemeriksaanTahunIni'
