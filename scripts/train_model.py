@@ -23,6 +23,7 @@ model = make_pipeline(
 )
 model.fit(X, y)
 
-# Simpan model dan scaler
-joblib.dump(model, 'storage/app/models/new_model.joblib')
-print("Model berhasil dilatih dan disimpan")
+# Simpan model dan scaler ke model_terbaru.joblib (sesuai dengan predict.py)
+model_path = r'c:\xampp\htdocs\Posyandu_Remaja\storage\app\models\model_terbaru.joblib'
+joblib.dump(model, model_path)
+print(f"Model berhasil dilatih dan disimpan ke: {model_path}")

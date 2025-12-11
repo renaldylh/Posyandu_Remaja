@@ -128,16 +128,17 @@ def predict(input_data):
         
         # Handle blood pressure input (could be a number or 'systolic/diastolic' string)
         try:
-            if isinstance(input_data['tekanan_darah'], str) and '/' in input_data['tekanan_darah']:
+            tekanan_darah_input = input_data.get('tekanan_darah', '120')
+            if isinstance(tekanan_darah_input, str) and '/' in tekanan_darah_input:
                 # If it's in 'systolic/diastolic' format, take the systolic value
-                blood_pressure = float(input_data['tekanan_darah'].split('/')[0])
+                blood_pressure = float(tekanan_darah_input.split('/')[0])
             else:
                 # If it's already a number or a string number, convert to float directly
-                blood_pressure = float(input_data['tekanan_darah'])
-        except (ValueError, TypeError):
+                blood_pressure = float(tekanan_darah_input)
+        except (ValueError, TypeError, AttributeError):
             # If conversion fails, use a default value and log a warning
             blood_pressure = 120.0  # Default normal systolic pressure
-            debug_print(f"Warning: Could not parse blood pressure value: {input_data['tekanan_darah']}, using default: {blood_pressure}")
+            debug_print(f"Warning: Could not parse blood pressure value: {input_data.get('tekanan_darah', 'N/A')}, using default: {blood_pressure}")
         
         # Validasi dan konversi input
         try:
@@ -161,45 +162,90 @@ def predict(input_data):
         # 3.1 Lakukan prediksi
         debug_print("Melakukan prediksi...")
         
-        # Check untuk gula darah >140 - auto risiko
+        # Ambil nilai untuk rule-based decision
         glucose_level = float(input_data.get('gula_darah', 0))
         keturunan = input_data.get('keturunan', 'Tidak')
         
-        # Auto risiko jika gula darah >140
-        if glucose_level > 140:
-            debug_print(f"Gula darah tinggi terdeteksi: {glucose_level} > 140 - auto risiko")
+        # === BUSINESS LOGIC RULES ===
+        # Rule 1: Keturunan diabetes = "Ya" → SELALU BERISIKO
+        # Rule 2: Gula darah >= 140 → BERISIKO
+        # Rule 3: Gula darah < 140 DAN Keturunan = "Tidak" → TIDAK BERISIKO
+        
+        # Rule 1: Keturunan diabetes
+        if keturunan == 'Ya':
+            debug_print(f"RULE 1: Keturunan diabetes terdeteksi → Berisiko")
+            confidence = 90.0 if glucose_level >= 140 else 80.0
             return {
                 "success": True,
                 "prediction": 1,
-                "confidence": 95.0,
+                "confidence": confidence,
                 "status": "Berisiko",
                 "rekomendasi": [
-                    "Segera konsultasi dengan dokter untuk pemeriksaan lebih lanjut",
-                    "Kurangi konsumsi gula dan karbohidrat sederhana",
-                    "Lakukan monitoring gula darah secara teratur",
-                    "Tingkatkan aktivitas fisik dan jaga berat badan ideal"
+                    "Lakukan pemeriksaan gula darah rutin karena faktor keturunan diabetes",
+                    "Jaga pola makan sehat dan hindari konsumsi gula berlebih",
+                    "Tingkatkan aktivitas fisik untuk mencegah diabetes",
+                    "Monitor berat badan dan jaga BMI dalam rentang normal",
+                    "Konsultasi dengan dokter untuk pemeriksaan preventif"
                 ],
                 "bmi": round(bmi, 1) if 'bmi' in locals() else None,
-                "warning": "Gula darah tinggi (>140 mg/dL) terdeteksi"
+                "warning": "Faktor risiko: Riwayat keluarga diabetes"
             }
         
-        # Auto risiko jika gula darah <140 tapi ada keturunan diabetes
-        if glucose_level <= 140 and keturunan == 'Ya':
-            debug_print(f"Gula darah normal ({glucose_level}) tapi ada keturunan diabetes - auto risiko")
+        # Rule 2: Gula darah >= 140 (Prediabetes/Diabetes)
+        if glucose_level >= 140:
+            debug_print(f"RULE 2: Gula darah tinggi ({glucose_level} >= 140) → Berisiko")
+            
+            # Tentukan severity
+            if glucose_level >= 200:
+                confidence = 99.0
+                warning_msg = f"Gula darah sangat tinggi ({glucose_level} mg/dL) - Diabetes"
+                rekomendasi = [
+                    "SEGERA konsultasi dengan dokter - gula darah Anda sangat tinggi!",
+                    "Lakukan pemeriksaan diabetes lengkap (HbA1c, GDP, GDPP)",
+                    "Mulai monitoring gula darah secara rutin",
+                    "Hindari makanan tinggi gula dan karbohidrat sederhana",
+                    "Tingkatkan aktivitas fisik sesuai anjuran dokter"
+                ]
+            else:
+                confidence = 85.0
+                warning_msg = f"Gula darah tinggi ({glucose_level} mg/dL) - Prediabetes"
+                rekomendasi = [
+                    "Konsultasi dengan dokter untuk pemeriksaan lebih lanjut",
+                    "Kurangi konsumsi gula dan karbohidrat sederhana",
+                    "Lakukan monitoring gula darah secara teratur",
+                    "Tingkatkan aktivitas fisik minimal 30 menit per hari",
+                    "Jaga berat badan ideal dengan pola makan seimbang"
+                ]
+            
             return {
                 "success": True,
                 "prediction": 1,
-                "confidence": 85.0,
+                "confidence": confidence,
                 "status": "Berisiko",
-                "rekomendasi": [
-                    "Lakukan pemeriksaan gula darah rutin karena faktor keturunan",
-                    "Pertahankan pola makan sehat dan hindari gula berlebih",
-                    "Tingkatkan aktivitas fisik untuk mencegah diabetes",
-                    "Monitor berat badan dan jaga BMI normal"
-                ],
+                "rekomendasi": rekomendasi,
                 "bmi": round(bmi, 1) if 'bmi' in locals() else None,
-                "warning": "Risiko tinggi karena faktor keturunan diabetes"
+                "warning": warning_msg
             }
+        
+        # Rule 3: Gula darah < 140 DAN Keturunan = "Tidak" → TIDAK BERISIKO
+        debug_print(f"RULE 3: Gula darah normal ({glucose_level} < 140) dan tidak ada keturunan → Tidak Berisiko")
+        return {
+            "success": True,
+            "prediction": 0,
+            "confidence": 95.0,
+            "status": "Tidak Berisiko",
+            "rekomendasi": [
+                "Pertahankan pola hidup sehat Anda",
+                "Lakukan aktivitas fisik secara teratur",
+                "Konsumsi makanan bergizi seimbang",
+                "Lakukan pemeriksaan kesehatan rutin tahunan",
+                "Jaga berat badan ideal"
+            ],
+            "bmi": round(bmi, 1) if 'bmi' in locals() else None
+        }
+        
+        # NOTE: Kode di bawah ini tidak akan pernah dieksekusi karena semua kasus sudah ditangani
+        # Tapi tetap ada untuk fallback (jaga-jaga)
         
         if not hasattr(model, 'predict'):
             raise AttributeError("Model tidak memiliki method 'predict'")
@@ -223,11 +269,11 @@ def predict(input_data):
         debug_print("Mempersiapkan data input...")  # Debug
         encoded_data = []
         
-        # Daftar fitur yang dibutuhkan (sesuai dengan model terbaru)
+        # Daftar fitur yang dibutuhkan (sesuai dengan model Google Colab)
         feature_order = [
             'Gender', 'Age', 'Glucose', 'BMI', 
             'Family History', 'Smoking Status', 'Blood Pressure',
-            'Hemoglobin'  # Menambahkan Hemoglobin yang dibutuhkan model
+            'Rule_Risk'  # FIXED: Ganti Hemoglobin dengan Rule_Risk (sesuai model Colab)
         ]
         
         # Pastikan semua fitur ada dalam input_data
@@ -244,8 +290,8 @@ def predict(input_data):
             'BMI': input_data.get('berat_badan', 0) / ((input_data.get('tinggi_badan', 1) / 100) ** 2),
             'Family History': input_data.get('keturunan', 'Tidak'),
             'Smoking Status': input_data.get('merokok', 'Tidak'),
-            'Blood Pressure': input_data.get('tekanan_darah', 120),
-            'Hemoglobin': input_data.get('hemoglobin', 0)  # Pastikan hemoglobin ada di input
+            'Blood Pressure': blood_pressure,  # FIXED: Gunakan blood_pressure yang sudah di-parse di atas
+            'Rule_Risk': rule_risk  # FIXED: Gunakan Rule_Risk yang sudah dihitung di atas
         }
         
         # Konversi ke format numerik
