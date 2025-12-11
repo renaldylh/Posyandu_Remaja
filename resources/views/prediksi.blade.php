@@ -119,7 +119,7 @@
                     </select>
                 </div>
                 <div class="mb-3">
-                    <label class="form-label">Pola Tidur</label>
+                    <label class="form-label">Pola Tidur (begadang atau tidak)</label>
                     <select class="form-select rounded-pill" name="pola_tidur" required>
                         <option value="" disabled hidden {{ old('pola_tidur') ? '' : 'selected' }}>Pilih</option>
                         <option value="Tidak" {{ old('pola_tidur')=='Tidak' ? 'selected' : '' }}>Tidak</option>
@@ -127,7 +127,7 @@
                     </select>
                 </div>
                 <div class="mb-3">
-                    <label class="form-label">Pola Makan</label>
+                    <label class="form-label">Pola Makan (seimbang antara protein, karbohidrat, zat basi, vitamin dan yang lain-nya)</label>
                     <select class="form-select rounded-pill" name="pola_makan" required>
                         <option value="" disabled hidden {{ old('pola_makan') ? '' : 'selected' }}>Pilih</option>
                         <option value="Tidak" {{ old('pola_makan')=='Tidak' ? 'selected' : '' }}>Tidak</option>
