@@ -75,6 +75,266 @@
     .animate-fade-in {
         animation: fadeIn 0.3s ease-out forwards;
     }
+
+    /* ============================================
+       PRINT STYLES - Professional PDF Layout
+       ============================================ */
+    @media print {
+        /* Reset page margins and setup */
+        @page {
+            size: A4;
+            margin: 15mm;
+        }
+
+        * {
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+            color-adjust: exact !important;
+        }
+
+        body {
+            font-size: 11pt;
+            line-height: 1.4;
+            color: #000;
+            background: white;
+        }
+
+        /* Hide unnecessary elements for print */
+        nav, footer, .btn, .no-print,
+        .navbar, .sidebar, .breadcrumb {
+            display: none !important;
+        }
+
+        /* Container adjustments */
+        .container {
+            width: 100%;
+            max-width: 100%;
+            padding: 0;
+            margin: 0;
+        }
+
+        /* Header for printed document */
+        .result-card::before {
+            content: "LAPORAN HASIL PREDIKSI RISIKO DIABETES";
+            display: block;
+            font-size: 18pt;
+            font-weight: bold;
+            text-align: center;
+            padding: 15px 0;
+            margin-bottom: 20px;
+            border-bottom: 3px solid #333;
+            color: #333;
+        }
+
+        /* Print metadata */
+        .result-card::after {
+            content: "Tanggal Cetak: " attr(data-print-date);
+            display: block;
+            font-size: 9pt;
+            text-align: right;
+            margin-top: 10px;
+            color: #666;
+        }
+
+        /* Cards styling for print */
+        .card {
+            border: 1px solid #ddd !important;
+            box-shadow: none !important;
+            page-break-inside: avoid;
+            margin-bottom: 15pt !important;
+            border-radius: 0 !important;
+        }
+
+        .card-body {
+            padding: 15pt !important;
+        }
+
+        .card-title {
+            font-size: 14pt !important;
+            font-weight: bold !important;
+            color: #333 !important;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 8pt;
+            margin-bottom: 12pt !important;
+        }
+
+        /* Result card special styling */
+        .result-card {
+            background: white !important;
+            border: 2px solid #333 !important;
+            margin-bottom: 20pt !important;
+        }
+
+        .result-card.risk-high {
+            border-color: #dc3545 !important;
+            background: #fff5f5 !important;
+        }
+
+        .result-card.risk-low {
+            border-color: #28a745 !important;
+            background: #f0f9f5 !important;
+        }
+
+        /* Status badge */
+        #predictionStatus .badge {
+            border: 2px solid currentColor !important;
+            padding: 8pt 15pt !important;
+            font-size: 14pt !important;
+            font-weight: bold !important;
+        }
+
+        .badge.bg-danger {
+            background-color: #dc3545 !important;
+            color: white !important;
+        }
+
+        .badge.bg-success {
+            background-color: #28a745 !important;
+            color: white !important;
+        }
+
+        /* BMI display */
+        .badge.bg-light {
+            background-color: #f8f9fa !important;
+            border: 1px solid #dee2e6 !important;
+            color: #333 !important;
+        }
+
+        .badge.bg-warning {
+            background-color: #ffc107 !important;
+            color: #000 !important;
+        }
+
+        /* Data items */
+        .data-item {
+            background: #f8f9fa !important;
+            border: 1px solid #e9ecef !important;
+            border-radius: 4pt !important;
+            padding: 8pt 12pt !important;
+            margin-bottom: 8pt !important;
+        }
+
+        .data-item .text-muted {
+            color: #666 !important;
+            font-weight: 500;
+        }
+
+        .data-item .fw-medium {
+            color: #000 !important;
+            font-weight: 600 !important;
+        }
+
+        /* Recommendations */
+        .recommendation-item {
+            border: 1px solid #dee2e6 !important;
+            border-left: 4px solid #007bff !important;
+            background: white !important;
+            padding: 10pt !important;
+            margin-bottom: 8pt !important;
+            page-break-inside: avoid;
+        }
+
+        .recommendation-item i {
+            font-size: 14pt !important;
+        }
+
+        .text-danger {
+            color: #dc3545 !important;
+        }
+
+        .text-success {
+            color: #28a745 !important;
+        }
+
+        /* Icon styling */
+        .bi {
+            font-weight: bold;
+        }
+
+        /* Status icon container */
+        .status-icon-container {
+            width: 60pt !important;
+            height: 60pt !important;
+            border: 3px solid currentColor;
+            border-radius: 50%;
+        }
+
+        .status-icon {
+            font-size: 30pt !important;
+        }
+
+        /* Typography */
+        h5, .h5 {
+            font-size: 13pt !important;
+            font-weight: bold !important;
+            color: #333 !important;
+        }
+
+        p {
+            margin-bottom: 8pt;
+        }
+
+        /* Remove animations and transitions */
+        * {
+            animation: none !important;
+            transition: none !important;
+        }
+
+        /* Grid layout */
+        .row {
+            display: flex;
+            flex-wrap: wrap;
+            margin: 0 -5pt;
+        }
+
+        .col-md-6 {
+            flex: 0 0 50%;
+            max-width: 50%;
+            padding: 0 5pt;
+        }
+
+        .col-12 {
+            flex: 0 0 100%;
+            max-width: 100%;
+        }
+
+        /* Footer info */
+        .card:last-child::after {
+            content: "Catatan: Hasil prediksi ini bersifat informatif. Konsultasikan dengan tenaga medis untuk diagnosis yang lebih akurat.";
+            display: block;
+            font-size: 9pt;
+            font-style: italic;
+            color: #666;
+            text-align: center;
+            margin-top: 20pt;
+            padding-top: 15pt;
+            border-top: 1px solid #ddd;
+        }
+
+        /* Page breaks */
+        .card {
+            page-break-before: auto;
+            page-break-after: auto;
+        }
+
+        /* Ensure good spacing */
+        .mb-4 {
+            margin-bottom: 15pt !important;
+        }
+
+        .mb-3 {
+            margin-bottom: 10pt !important;
+        }
+
+        /* Print-specific utilities */
+        .print-only {
+            display: block !important;
+        }
+
+        .no-print {
+            display: none !important;
+        }
+    }
 </style>
 @endpush
 
@@ -169,6 +429,29 @@
         } else {
             // If no data, redirect back to prediction form
             window.location.href = "{{ route('prediksi') }}";
+        }
+
+        // Set print date when print button is clicked
+        const printButton = document.querySelector('[onclick="window.print()"]');
+        if (printButton) {
+            printButton.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                // Set current date for print
+                const now = new Date();
+                const dateStr = now.toLocaleDateString('id-ID', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+                
+                document.getElementById('resultCard').setAttribute('data-print-date', dateStr);
+                
+                // Trigger print dialog
+                setTimeout(() => window.print(), 100);
+            });
         }
     });
 
