@@ -20,5 +20,37 @@ class DatabaseSeeder extends Seeder
             'email' => 'test@example.com',
             'password' => bcrypt('password'),
         ]);
+
+        // Kader Kuta Kidul
+        User::factory()->create([
+            'name' => 'Kader Kuta Kidul',
+            'email' => 'dskutakidul02@gmail.com',
+            'password' => bcrypt('@kutakidul09!'),
+            'role' => 'KADER',
+        ]);
+
+        // Kader Kuta Lor
+        User::factory()->create([
+            'name' => 'Kader Kuta Lor',
+            'email' => 'dskutalor01@gmail.com',
+            'password' => bcrypt('@kutalor77!'),
+            'role' => 'KADER',
+        ]);
+
+        // Kader Duku Pete
+        User::factory()->create([
+            'name' => 'Kader Duku Pete',
+            'email' => 'dsdukupete04@gmail.com',
+            'password' => bcrypt('@dukupete32!'),
+            'role' => 'KADER',
+        ]);
+
+        // Kader Salaganggeng
+        User::factory()->create([
+            'name' => 'Kader Salaganggeng',
+            'email' => 'dsSalaganggeng03@gmail.com',
+            'password' => bcrypt('@Salaganggeng64!'),
+            'role' => 'KADER',
+        ]);
     }
 }

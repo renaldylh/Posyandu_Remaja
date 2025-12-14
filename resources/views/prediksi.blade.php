@@ -88,11 +88,11 @@
                 </div>
                 <div class="mb-3">
                     <label class="form-label">Berat Badan (Kg)</label>
-                    <input type="number" name="berat_badan" class="form-control rounded-pill" value="{{ old('berat_badan') }}" required>
+                    <input type="number" name="berat_badan" class="form-control rounded-pill" min="0" step="0.1" value="{{ old('berat_badan') }}" required>
                 </div>
                 <div class="mb-3">
                     <label class="form-label">Tinggi Badan (Cm)</label>
-                    <input type="number" name="tinggi_badan" id="tinggi_badan" class="form-control rounded-pill" value="{{ old('tinggi_badan') }}" required>
+                    <input type="number" name="tinggi_badan" id="tinggi_badan" class="form-control rounded-pill" min="0" value="{{ old('tinggi_badan') }}" required>
                 </div>
                 <div class="mb-3">
                     <label class="form-label">Tekanan Darah (mmHg)</label>
@@ -100,11 +100,11 @@
                 </div>
                 <div class="mb-3">
                     <label class="form-label">Hemoglobin (gram/dL)</label>
-                    <input type="number" step="0.1" name="hemoglobin" class="form-control rounded-pill" value="{{ old('hemoglobin') }}" required>
+                    <input type="number" step="0.1" name="hemoglobin" class="form-control rounded-pill" min="0" value="{{ old('hemoglobin') }}" required>
                 </div>
                 <div class="mb-3">
                     <label class="form-label">Gula Darah (mg/dL)</label>
-                    <input type="number" name="gula_darah" class="form-control rounded-pill" value="{{ old('gula_darah') }}" required>
+                    <input type="number" name="gula_darah" class="form-control rounded-pill" min="0" value="{{ old('gula_darah') }}" required>
                 </div>
             </div>
 
@@ -305,6 +305,37 @@
         });
 
         // Remove AJAX submit: allow normal form POST to server which renders hasil_prediksi view
+
+        // Prevent negative values and enforce minimum limits
+        const numericInputs = [
+            { selector: 'input[name="usia"]', min: 0 },
+            { selector: 'input[name="berat_badan"]', min: 0 },
+            { selector: 'input[name="tinggi_badan"]', min: 0 },
+            { selector: 'input[name="hemoglobin"]', min: 0 },
+            { selector: 'input[name="gula_darah"]', min: 0 }
+        ];
+
+        numericInputs.forEach(function(config) {
+            const input = document.querySelector(config.selector);
+            if (input) {
+                // Block minus key
+                input.addEventListener('keydown', function(e) {
+                    if (e.key === '-' || e.key === 'e' || e.key === 'E') {
+                        e.preventDefault();
+                    }
+                });
+
+                // Validate and correct value on input/change
+                ['input', 'change', 'blur'].forEach(function(eventType) {
+                    input.addEventListener(eventType, function(e) {
+                        let val = parseFloat(e.target.value);
+                        if (!isNaN(val) && val < config.min) {
+                            e.target.value = config.min;
+                        }
+                    });
+                });
+            }
+        });
     });
 </script>
 @endpush

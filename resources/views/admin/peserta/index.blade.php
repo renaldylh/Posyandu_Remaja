@@ -55,7 +55,7 @@
                     <th>No Peserta</th>
                     <th>Nama</th>
                     <th>Tanggal Lahir</th>
-                    <th>Umur</th>
+                    <th>Umur (Tahun)</th>
                     <th>NIK</th>
                     <th>Total Pemeriksaan</th>
                     <th>Pemeriksaan Terakhir</th>
@@ -81,7 +81,18 @@
                         <td>{{ $row->kode }}</td>
                         <td>{{ $row->nama }}</td>
                         <td>{{ optional($row->tanggal_lahir)->translatedFormat('d F Y') ?? '-' }}</td>
-                        <td>{{ $row->umur ? $row->umur . ' th' : '-' }}</td>
+                        @php
+                            if ($row->tanggal_lahir) {
+                                $umurTahun = $row->tanggal_lahir->age;
+                                // Minimal 1 tahun jika umur 0
+                                $umurHitung = $umurTahun > 0 ? $umurTahun : 1;
+                            } else {
+                                $umurHitung = $row->umur ?? null;
+                            }
+                        @endphp
+                        <td @if($umurHitung && $umurHitung > 20) class="bg-warning text-dark fw-bold" title="Usia di atas 20 tahun" @endif>
+                            {{ $umurHitung ?? '-' }}
+                        </td>
                         <td>{{ $row->nik }}</td>
                         <td>
                             <span class="badge bg-info text-dark">{{ $row->pemeriksaan_count ?? 0 }}</span>

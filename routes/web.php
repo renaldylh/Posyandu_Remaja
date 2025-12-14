@@ -2,37 +2,17 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PredictionController;
-Route::get('/', function () {
-    return view('home');
-})->name('home');
 
-Route::get('/prediksi', function () {
-    return view('prediksi');
-})->name('prediksi');
+// Optimized: Use Route::view() instead of closures for better performance
+Route::view('/', 'home')->name('home');
+Route::view('/prediksi', 'prediksi')->name('prediksi');
+Route::view('/login', 'login')->name('login');
+Route::view('/kunjungan', 'kunjungan')->name('kunjungan');
+Route::view('/gizi', 'gizi')->name('gizi');
+Route::view('/anemia', 'anemia')->name('anemia');
+Route::view('/tekanan-darah', 'tekananDarah')->name('tekanan-darah');
+Route::view('/gula-darah', 'gulaDarah')->name('gula-darah');
 
-Route::get('/login', function () {
-    return view('login');
-})->name('login');
-
-Route::get('/kunjungan', function () {
-    return view('kunjungan');
-})->name('kunjungan');
-
-Route::get('/gizi', function () {
-    return view('gizi');
-})->name('gizi');
-
-Route::get('/anemia', function () {
-    return view('anemia');
-})->name('anemia');
-
-Route::get('/tekanan-darah', function () {
-    return view('tekananDarah');
-})->name('tekanan-darah');
-
-Route::get('gula-darah', function () {
-    return view('gulaDarah');
-})->name('gula-darah');
 
 Route::post('/predict', [PredictionController::class, 'predict'])->name('predict');
 Route::get('/test-predict', [PredictionController::class, 'testPredict']);

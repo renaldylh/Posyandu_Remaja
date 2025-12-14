@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StorePesertaRequest;
+use App\Http\Requests\UpdatePesertaRequest;
 use App\Models\Peserta;
+use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Validation\Rule;
 use Illuminate\View\View;
-use Carbon\Carbon;
 
 class PesertaController extends Controller
 {
@@ -15,6 +16,60 @@ class PesertaController extends Controller
     {
         $query = Peserta::query();
 
+        $this->applyFilters($query, $request);
+
+        $query->withCount('pemeriksaan')
+            ->with(['latestPemeriksaan']);
+
+        $peserta = $query->latest()->paginate(10)->appends($request->query());
+        $filters = $request->only(['search', 'jenis_kelamin', 'umur_min', 'umur_max']);
+
+        return view('admin.peserta.index', compact('peserta', 'filters'));
+    }
+
+    public function create(): View
+    {
+        return view('admin.peserta.create');
+    }
+
+    public function store(StorePesertaRequest $request): RedirectResponse
+    {
+        $validated = $request->validated();
+        $validated['umur'] = $this->calculateUmur($validated['umur'] ?? null, $validated['tanggal_lahir'] ?? null);
+        $validated['kode'] = $this->generateKode();
+
+        Peserta::create($validated);
+
+        return redirect()->route('admin.peserta.index')->with('status', 'Peserta berhasil ditambahkan.');
+    }
+
+    public function edit(Peserta $peserta): View
+    {
+        return view('admin.peserta.edit', compact('peserta'));
+    }
+
+    public function update(UpdatePesertaRequest $request, Peserta $peserta): RedirectResponse
+    {
+        $validated = $request->validated();
+        $validated['umur'] = $this->calculateUmur($validated['umur'] ?? null, $validated['tanggal_lahir'] ?? null);
+
+        $peserta->update($validated);
+
+        return redirect()->route('admin.peserta.index')->with('status', 'Peserta berhasil diperbarui.');
+    }
+
+    public function destroy(Peserta $peserta): RedirectResponse
+    {
+        $peserta->delete();
+
+        return redirect()->route('admin.peserta.index')->with('status', 'Peserta berhasil dihapus.');
+    }
+
+    /**
+     * Apply search and filter conditions to query
+     */
+    private function applyFilters($query, Request $request): void
+    {
         if ($search = $request->query('search')) {
             $query->where(function ($q) use ($search) {
                 $q->where('nama', 'like', "%{$search}%")
@@ -34,89 +89,29 @@ class PesertaController extends Controller
         if ($request->filled('umur_max')) {
             $query->where('umur', '<=', (int)$request->query('umur_max'));
         }
-
-        $query->withCount('pemeriksaan')
-            ->with(['latestPemeriksaan']);
-
-        $peserta = $query->latest()->paginate(10)->appends($request->query());
-
-        $filters = $request->only(['search', 'jenis_kelamin', 'umur_min', 'umur_max']);
-
-        return view('admin.peserta.index', compact('peserta', 'filters'));
     }
 
-    public function create(): View
-    {
-        return view('admin.peserta.create');
-    }
-
-    public function store(Request $request): RedirectResponse
-    {
-        $validated = $request->validate([
-            'nama' => ['required', 'string', 'max:255'],
-            'tanggal_lahir' => ['nullable', 'date'],
-            'umur' => ['nullable', 'integer', 'min:0', 'max:120'],
-            'jenis_kelamin' => ['required', Rule::in(['Laki-laki', 'Perempuan'])],
-            'nik' => ['required', 'string', 'max:20', 'unique:peserta,nik'],
-            'alamat' => ['nullable', 'string'],
-        ]);
-
-        $validated['umur'] = $this->resolveUmur($validated['umur'] ?? null, $validated['tanggal_lahir'] ?? null);
-        $validated['kode'] = $this->generateKode();
-
-        Peserta::create($validated);
-
-        return redirect()->route('admin.peserta.index')->with('status', 'Peserta berhasil ditambahkan.');
-    }
-
-    public function edit(Peserta $peserta): View
-    {
-        return view('admin.peserta.edit', compact('peserta'));
-    }
-
-    public function update(Request $request, Peserta $peserta): RedirectResponse
-    {
-        $validated = $request->validate([
-            'nama' => ['required', 'string', 'max:255'],
-            'tanggal_lahir' => ['nullable', 'date'],
-            'umur' => ['nullable', 'integer', 'min:0', 'max:120'],
-            'jenis_kelamin' => ['required', Rule::in(['Laki-laki', 'Perempuan'])],
-            'nik' => ['required', 'string', 'max:20', Rule::unique('peserta', 'nik')->ignore($peserta->id)],
-            'alamat' => ['nullable', 'string'],
-        ]);
-
-        $validated['umur'] = $this->resolveUmur($validated['umur'] ?? null, $validated['tanggal_lahir'] ?? null);
-        $peserta->update($validated);
-
-        return redirect()->route('admin.peserta.index')->with('status', 'Peserta berhasil diperbarui.');
-    }
-
-    public function destroy(Peserta $peserta): RedirectResponse
-    {
-        $peserta->delete();
-
-        return redirect()->route('admin.peserta.index')->with('status', 'Peserta berhasil dihapus.');
-    }
-
+    /**
+     * Generate unique participant code
+     */
     private function generateKode(): string
     {
         $latest = Peserta::orderByDesc('id')->first();
         $latestNumber = $latest && $latest->kode ? (int)substr($latest->kode, 2) : 0;
-        $number = $latestNumber + 1;
 
-        return 'PS' . str_pad((string)$number, 7, '0', STR_PAD_LEFT);
+        return 'PS' . str_pad((string)($latestNumber + 1), 7, '0', STR_PAD_LEFT);
     }
 
-    private function resolveUmur(?int $umur, ?string $tanggalLahir): ?int
+    /**
+     * Calculate age from birth date or return provided age
+     */
+    private function calculateUmur(?int $umur, ?string $tanggalLahir): ?int
     {
         if (!is_null($umur)) {
             return $umur;
         }
 
-        if ($tanggalLahir) {
-            return Carbon::parse($tanggalLahir)->age;
-        }
-
-        return null;
+        return $tanggalLahir ? Carbon::parse($tanggalLahir)->age : null;
     }
 }
+

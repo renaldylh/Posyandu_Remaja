@@ -167,9 +167,46 @@ def predict(input_data):
         keturunan = input_data.get('keturunan', 'Tidak')
         
         # === BUSINESS LOGIC RULES ===
+        # Rule 0: Gula darah < 70 → BERISIKO GULA DARAH RENDAH (Hipoglikemia)
         # Rule 1: Keturunan diabetes = "Ya" → SELALU BERISIKO
         # Rule 2: Gula darah >= 140 → BERISIKO
         # Rule 3: Gula darah < 140 DAN Keturunan = "Tidak" → TIDAK BERISIKO
+        
+        # Rule 0: Gula darah rendah (Hipoglikemia)
+        if glucose_level < 70:
+            debug_print(f"RULE 0: Gula darah rendah ({glucose_level} < 70) → Berisiko Hipoglikemia")
+            
+            # Tentukan severity berdasarkan level gula darah
+            if glucose_level < 54:
+                confidence = 95.0
+                warning_msg = f"Gula darah sangat rendah ({glucose_level} mg/dL) - Hipoglikemia Berat"
+                rekomendasi = [
+                    "SEGERA konsumsi makanan/minuman manis untuk menaikkan gula darah!",
+                    "Segera konsultasi dengan dokter - gula darah Anda sangat rendah",
+                    "Hindari puasa dalam waktu lama tanpa pengawasan medis",
+                    "Selalu siapkan camilan manis untuk kondisi darurat",
+                    "Lakukan monitoring gula darah secara rutin"
+                ]
+            else:
+                confidence = 85.0
+                warning_msg = f"Gula darah rendah ({glucose_level} mg/dL) - Hipoglikemia"
+                rekomendasi = [
+                    "Konsumsi makanan/minuman manis untuk menaikkan gula darah",
+                    "Konsultasi dengan dokter mengenai kondisi gula darah rendah",
+                    "Makan secara teratur dan jangan melewatkan waktu makan",
+                    "Hindari aktivitas fisik berat saat gula darah rendah",
+                    "Pantau gula darah secara berkala"
+                ]
+            
+            return {
+                "success": True,
+                "prediction": 1,
+                "confidence": confidence,
+                "status": "Berisiko Gula Darah Rendah",
+                "rekomendasi": rekomendasi,
+                "bmi": round(bmi, 1) if 'bmi' in locals() else None,
+                "warning": warning_msg
+            }
         
         # Rule 1: Keturunan diabetes
         if keturunan == 'Ya':

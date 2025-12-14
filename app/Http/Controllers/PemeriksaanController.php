@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Exports\PemeriksaanExport;
+use App\Http\Requests\StorePemeriksaanRequest;
+use App\Http\Requests\UpdatePemeriksaanRequest;
 use App\Models\Pemeriksaan;
 use App\Models\Peserta;
 use Dompdf\Dompdf;
@@ -18,36 +20,9 @@ class PemeriksaanController extends Controller
     {
         $query = Pemeriksaan::with(['peserta.latestPemeriksaan', 'peserta']);
 
-        if ($search = $request->query('search')) {
-            $query->whereHas('peserta', function ($q) use ($search) {
-                $q->where('nama', 'like', "%{$search}%")
-                    ->orWhere('kode', 'like', "%{$search}%")
-                    ->orWhere('nik', 'like', "%{$search}%");
-            });
-        }
-
-        if ($gender = $request->query('jenis_kelamin')) {
-            $query->whereHas('peserta', fn ($q) => $q->where('jenis_kelamin', $gender));
-        }
-
-        if ($request->filled('umur_min')) {
-            $query->whereHas('peserta', fn ($q) => $q->where('umur', '>=', (int)$request->query('umur_min')));
-        }
-
-        if ($request->filled('umur_max')) {
-            $query->whereHas('peserta', fn ($q) => $q->where('umur', '<=', (int)$request->query('umur_max')));
-        }
-
-        if ($request->filled('tanggal_mulai')) {
-            $query->whereDate('tanggal_pemeriksaan', '>=', $request->query('tanggal_mulai'));
-        }
-
-        if ($request->filled('tanggal_selesai')) {
-            $query->whereDate('tanggal_pemeriksaan', '<=', $request->query('tanggal_selesai'));
-        }
+        $this->applyFilters($query, $request);
 
         $pemeriksaan = $query->latest('tanggal_pemeriksaan')->paginate(10)->appends($request->query());
-
         $filters = $request->only(['search', 'jenis_kelamin', 'umur_min', 'umur_max', 'tanggal_mulai', 'tanggal_selesai']);
 
         return view('admin.pemeriksaan.index', compact('pemeriksaan', 'filters'));
@@ -57,32 +32,14 @@ class PemeriksaanController extends Controller
     {
         $filename = 'rekap_pemeriksaan_' . now()->format('Ymd_His') . '.xlsx';
 
-        return Excel::download(new PemeriksaanExport($request->only([
-            'search',
-            'jenis_kelamin',
-            'umur_min',
-            'umur_max',
-            'tanggal_mulai',
-            'tanggal_selesai',
-        ])), $filename);
+        return Excel::download(new PemeriksaanExport($this->getExportFilters($request)), $filename);
     }
 
     public function exportPdf(Request $request)
     {
-        $filters = $request->only([
-            'search',
-            'jenis_kelamin',
-            'umur_min',
-            'umur_max',
-            'tanggal_mulai',
-            'tanggal_selesai',
-        ]);
+        $data = (new PemeriksaanExport($this->getExportFilters($request)))->collection();
 
-        $data = (new PemeriksaanExport($filters))->collection();
-
-        $html = view('admin.pemeriksaan.export_pdf', [
-            'data' => $data,
-        ])->render();
+        $html = view('admin.pemeriksaan.export_pdf', compact('data'))->render();
 
         $options = new Options();
         $options->set('isHtml5ParserEnabled', true);
@@ -95,9 +52,11 @@ class PemeriksaanController extends Controller
 
         $filename = 'rekap_pemeriksaan_' . now()->format('Ymd_His') . '.pdf';
 
-        return response()->streamDownload(function () use ($dompdf) {
-            echo $dompdf->output();
-        }, $filename, ['Content-Type' => 'application/pdf']);
+        return response()->streamDownload(
+            fn() => print($dompdf->output()),
+            $filename,
+            ['Content-Type' => 'application/pdf']
+        );
     }
 
     public function create(): View
@@ -107,20 +66,9 @@ class PemeriksaanController extends Controller
         return view('admin.pemeriksaan.create', compact('peserta'));
     }
 
-    public function store(Request $request): RedirectResponse
+    public function store(StorePemeriksaanRequest $request): RedirectResponse
     {
-        $validated = $request->validate([
-            'peserta_id' => ['required', 'exists:peserta,id'],
-            'tanggal_pemeriksaan' => ['required', 'date_format:Y-m-d\TH:i'],
-            'tinggi_badan' => ['required', 'numeric', 'min:0'],
-            'berat_badan' => ['required', 'numeric', 'min:0'],
-            'tekanan_darah' => ['nullable', 'string', 'max:20'],
-            'hemoglobin' => ['nullable', 'numeric', 'min:0'],
-            'gula_darah' => ['nullable', 'numeric', 'min:0'],
-            'lingkar_lengan' => ['nullable', 'numeric', 'min:0'],
-        ]);
-
-        Pemeriksaan::create($validated);
+        Pemeriksaan::create($request->validated());
 
         return redirect()->route('admin.pemeriksaan.index')->with('status', 'Data pemeriksaan berhasil ditambahkan.');
     }
@@ -132,20 +80,9 @@ class PemeriksaanController extends Controller
         return view('admin.pemeriksaan.edit', compact('pemeriksaan', 'peserta'));
     }
 
-    public function update(Request $request, Pemeriksaan $pemeriksaan): RedirectResponse
+    public function update(UpdatePemeriksaanRequest $request, Pemeriksaan $pemeriksaan): RedirectResponse
     {
-        $validated = $request->validate([
-            'peserta_id' => ['required', 'exists:peserta,id'],
-            'tanggal_pemeriksaan' => ['required', 'date_format:Y-m-d\TH:i'],
-            'tinggi_badan' => ['required', 'numeric', 'min:0'],
-            'berat_badan' => ['required', 'numeric', 'min:0'],
-            'tekanan_darah' => ['nullable', 'string', 'max:20'],
-            'hemoglobin' => ['nullable', 'numeric', 'min:0'],
-            'gula_darah' => ['nullable', 'numeric', 'min:0'],
-            'lingkar_lengan' => ['nullable', 'numeric', 'min:0'],
-        ]);
-
-        $pemeriksaan->update($validated);
+        $pemeriksaan->update($request->validated());
 
         return redirect()->route('admin.pemeriksaan.index')->with('status', 'Data pemeriksaan berhasil diperbarui.');
     }
@@ -156,4 +93,54 @@ class PemeriksaanController extends Controller
 
         return redirect()->route('admin.pemeriksaan.index')->with('status', 'Data pemeriksaan berhasil dihapus.');
     }
+
+    /**
+     * Apply search and filter conditions to query
+     */
+    private function applyFilters($query, Request $request): void
+    {
+        if ($search = $request->query('search')) {
+            $query->whereHas('peserta', function ($q) use ($search) {
+                $q->where('nama', 'like', "%{$search}%")
+                    ->orWhere('kode', 'like', "%{$search}%")
+                    ->orWhere('nik', 'like', "%{$search}%");
+            });
+        }
+
+        if ($gender = $request->query('jenis_kelamin')) {
+            $query->whereHas('peserta', fn($q) => $q->where('jenis_kelamin', $gender));
+        }
+
+        if ($request->filled('umur_min')) {
+            $query->whereHas('peserta', fn($q) => $q->where('umur', '>=', (int)$request->query('umur_min')));
+        }
+
+        if ($request->filled('umur_max')) {
+            $query->whereHas('peserta', fn($q) => $q->where('umur', '<=', (int)$request->query('umur_max')));
+        }
+
+        if ($request->filled('tanggal_mulai')) {
+            $query->whereDate('tanggal_pemeriksaan', '>=', $request->query('tanggal_mulai'));
+        }
+
+        if ($request->filled('tanggal_selesai')) {
+            $query->whereDate('tanggal_pemeriksaan', '<=', $request->query('tanggal_selesai'));
+        }
+    }
+
+    /**
+     * Get filter parameters for export
+     */
+    private function getExportFilters(Request $request): array
+    {
+        return $request->only([
+            'search',
+            'jenis_kelamin',
+            'umur_min',
+            'umur_max',
+            'tanggal_mulai',
+            'tanggal_selesai',
+        ]);
+    }
 }
+

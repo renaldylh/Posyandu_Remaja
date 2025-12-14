@@ -347,19 +347,17 @@
                 <div class="card-body p-4">
                     <div class="row align-items-center">
                         <div class="col-md-8">
-                            <div class="d-flex align-items-center mb-3">
-                                <div class="me-4">
-                                    <div class="display-4 fw-bold" id="predictionStatus">-</div>
-                                </div>
-                                <div class="flex-grow-1">
-                                    <div class="d-flex align-items-center">
-                                        <span class="badge bg-light text-dark border">
-                                            <i class="bi bi-speedometer2 me-1"></i>
-                                            <span id="bmiValue">-</span> BMI
-                                            <span class="badge ms-2 rounded-pill" id="bmiCategory">-</span>
-                                        </span>
-                                    </div>
-                                </div>
+                            <!-- Status Prediksi -->
+                            <div class="mb-3">
+                                <div class="display-6 fw-bold" id="predictionStatus">-</div>
+                            </div>
+                            <!-- BMI Info -->
+                            <div>
+                                <span class="badge bg-light text-dark border p-2">
+                                    <i class="bi bi-speedometer2 me-1"></i>
+                                    <span id="bmiValue">-</span> BMI
+                                    <span class="badge ms-2 rounded-pill" id="bmiCategory">-</span>
+                                </span>
                             </div>
                         </div>
                         <div class="col-md-4 text-center">
@@ -400,6 +398,45 @@
                                     <p class="mb-0 small">Memproses rekomendasi...</p>
                                 </div>
                             </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Informasi Lebih Lanjut -->
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-body p-4">
+                    <h5 class="card-title fw-bold mb-4">
+                        <i class="bi bi-info-circle-fill text-info me-2"></i>Informasi Lebih Lanjut – Kunjungi:
+                    </h5>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <div class="p-3 bg-light rounded h-100">
+                                <h6 class="fw-bold text-primary mb-2">
+                                    <i class="bi bi-hospital me-2"></i>Puskesmas Pembantu Kuta
+                                </h6>
+                                <p class="mb-0 small text-muted">
+                                    <i class="bi bi-geo-alt me-1"></i>
+                                    Alamat: Kuta Lor RT 03/01, Desa Kuta, Kecamatan Belik, Kabupaten Pemalang, Jawa Tengah, Indonesia.
+                                </p>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="p-3 bg-light rounded h-100">
+                                <h6 class="fw-bold text-primary mb-2">
+                                    <i class="bi bi-hospital me-2"></i>Puskesmas Belik
+                                </h6>
+                                <p class="mb-0 small text-muted">
+                                    <i class="bi bi-geo-alt me-1"></i>
+                                    Alamat: Jl. Raya Belik–Watukumpul, Keretan, Belik, Kabupaten Pemalang, Jawa Tengah 52356.
+                                </p>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <p class="mb-0 small text-center text-muted fst-italic">
+                                <i class="bi bi-info-circle me-1"></i>
+                                Kunjungi langsung untuk mendapatkan informasi layanan, jadwal pelayanan, serta program kesehatan yang tersedia.
+                            </p>
                         </div>
                     </div>
                 </div>
@@ -469,18 +506,34 @@
 
         // Update risk status
         if (result.prediction === 1) {
-            // High risk
-            resultCard.classList.add('risk-high');
-            resultCard.classList.remove('risk-low');
-            predictionStatus.innerHTML = `
-                <span class="badge bg-danger bg-opacity-10 text-danger p-2 px-3 d-inline-flex align-items-center rounded-pill">
-                    <i class="bi bi-exclamation-triangle-fill me-2"></i>
-                    <span>Berisiko Tinggi</span>
-                </span>
-            `;
-            statusIcon.className = 'bi bi-exclamation-triangle-fill text-danger status-icon';
-            statusMessage.textContent = 'Perlu perhatian khusus';
-            statusIconContainer.style.background = 'rgba(231, 74, 59, 0.1)';
+            // Check if it's low blood sugar risk
+            if (result.status === 'Berisiko Gula Darah Rendah') {
+                // Low blood sugar risk - use warning/orange color
+                resultCard.classList.add('risk-high');
+                resultCard.classList.remove('risk-low');
+                predictionStatus.innerHTML = `
+                    <span class="badge bg-warning bg-opacity-10 text-warning p-2 px-3 d-inline-flex align-items-center rounded-pill">
+                        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                        <span>Berisiko Gula Darah Rendah</span>
+                    </span>
+                `;
+                statusIcon.className = 'bi bi-exclamation-triangle-fill text-warning status-icon';
+                statusMessage.textContent = 'Gula darah di bawah normal';
+                statusIconContainer.style.background = 'rgba(255, 193, 7, 0.1)';
+            } else {
+                // High risk (diabetes)
+                resultCard.classList.add('risk-high');
+                resultCard.classList.remove('risk-low');
+                predictionStatus.innerHTML = `
+                    <span class="badge bg-danger bg-opacity-10 text-danger p-2 px-3 d-inline-flex align-items-center rounded-pill">
+                        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                        <span>Berisiko Tinggi</span>
+                    </span>
+                `;
+                statusIcon.className = 'bi bi-exclamation-triangle-fill text-danger status-icon';
+                statusMessage.textContent = 'Perlu perhatian khusus';
+                statusIconContainer.style.background = 'rgba(231, 74, 59, 0.1)';
+            }
         } else {
             // Low risk
             resultCard.classList.add('risk-low');
