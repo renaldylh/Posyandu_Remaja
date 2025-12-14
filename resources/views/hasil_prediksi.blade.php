@@ -75,6 +75,133 @@
     .animate-fade-in {
         animation: fadeIn 0.3s ease-out forwards;
     }
+    
+    /* Mobile Responsive Styles */
+    @media (max-width: 992px) {
+        .container {
+            padding-left: 15px;
+            padding-right: 15px;
+        }
+    }
+    
+    @media (max-width: 768px) {
+        .result-card .card-body {
+            padding: 15px !important;
+        }
+        
+        .result-card .row {
+            flex-direction: column;
+        }
+        
+        .result-card .col-md-8,
+        .result-card .col-md-4 {
+            width: 100%;
+            text-align: center;
+        }
+        
+        .result-card .col-md-4 {
+            margin-top: 20px;
+        }
+        
+        #predictionStatus {
+            font-size: 1rem !important;
+        }
+        
+        .status-icon-container {
+            width: 60px;
+            height: 60px;
+        }
+        
+        .status-icon {
+            font-size: 1.8rem;
+        }
+        
+        .display-6 {
+            font-size: 1.2rem;
+        }
+        
+        .card-title {
+            font-size: 1rem;
+        }
+        
+        .data-item {
+            padding: 10px 12px;
+            font-size: 0.9rem;
+        }
+        
+        .recommendation-item {
+            padding: 10px !important;
+        }
+        
+        .recommendation-item p {
+            font-size: 0.9rem;
+            margin-bottom: 0;
+        }
+        
+        /* Action buttons mobile */
+        .d-flex.gap-2 {
+            flex-direction: column;
+            width: 100%;
+        }
+        
+        .d-flex.gap-2 .btn {
+            width: 100%;
+            margin-bottom: 8px;
+        }
+        
+        /* Info card mobile */
+        .card.border-0.shadow-sm .card-body {
+            padding: 15px;
+        }
+        
+        /* BMI badge */
+        .badge.bg-light {
+            display: block;
+            margin-top: 10px;
+        }
+    }
+    
+    @media (max-width: 576px) {
+        .my-5 {
+            margin-top: 1.5rem !important;
+            margin-bottom: 1.5rem !important;
+        }
+        
+        .card {
+            border-radius: 10px !important;
+        }
+        
+        .card-body {
+            padding: 12px !important;
+        }
+        
+        .card-title {
+            font-size: 0.95rem;
+        }
+        
+        .data-item {
+            padding: 8px 10px;
+            margin-bottom: 8px;
+        }
+        
+        .data-item .small {
+            font-size: 0.75rem;
+        }
+        
+        .data-item .fw-bold {
+            font-size: 0.85rem;
+        }
+        
+        .btn {
+            padding: 10px 15px;
+            font-size: 0.9rem;
+        }
+        
+        /* Puskesmas info card mobile */
+        .bi-hospital, .bi-geo-alt {
+            font-size: 1rem;
+        }
+    }
 
     /* ============================================
        PRINT STYLES - Professional PDF Layout

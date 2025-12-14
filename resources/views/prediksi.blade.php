@@ -50,6 +50,66 @@
         font-weight: 500;
         padding: 0.4em 0.8em;
     }
+    
+    /* Mobile Responsive for Prediksi */
+    @media (max-width: 768px) {
+        .container {
+            padding-left: 15px;
+            padding-right: 15px;
+        }
+        .container h3 {
+            font-size: 1.3rem;
+        }
+        form.p-4 {
+            padding: 20px !important;
+        }
+        .form-label {
+            font-size: 0.9rem;
+        }
+        .form-control, .form-select {
+            font-size: 0.9rem;
+            padding: 10px 15px;
+        }
+        .modal-dialog {
+            margin: 10px;
+        }
+        .modal-body {
+            padding: 15px !important;
+        }
+        .modal-body .card-body {
+            padding: 15px !important;
+        }
+        .display-4 {
+            font-size: 1.5rem;
+        }
+        .h4, .h5, .h6 {
+            font-size: 1rem;
+        }
+        .d-flex.justify-content-end {
+            flex-direction: column;
+        }
+        .d-flex.justify-content-end .btn {
+            width: 100%;
+            margin-bottom: 10px;
+        }
+        .d-flex.justify-content-end .me-2 {
+            margin-right: 0 !important;
+        }
+    }
+    
+    @media (max-width: 576px) {
+        .my-5 {
+            margin-top: 2rem !important;
+            margin-bottom: 2rem !important;
+        }
+        form.p-4 {
+            padding: 15px !important;
+            border-radius: 10px !important;
+        }
+        .rounded-pill {
+            border-radius: 10px !important;
+        }
+    }
 </style>
 @endpush
 

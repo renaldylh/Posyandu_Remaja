@@ -13,23 +13,24 @@
         body {
             background: url('/assets/bg1.jpeg') no-repeat center center fixed;
             background-size: cover;
-            position: relative; /* penting supaya ::before bisa diposisikan relatif */
+            position: relative;
+            min-height: 100vh;
         }
 
         /* Overlay putih transparan di atas background */
         body::before {
             content: "";
-            position: fixed; /* pakai fixed biar menutupi seluruh layar */
+            position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(255, 255, 255, 0.6); /* 👉 ubah nilai terakhir (0.0 - 1.0) untuk tingkat transparansi */
+            background: rgba(255, 255, 255, 0.6);
             z-index: 0;
         }
 
         .login-card {
-            position: relative; /* supaya berada di atas overlay */
+            position: relative;
             max-width: 400px;
             margin: 80px auto;
             background: rgba(255, 255, 255, 0.95);
@@ -37,7 +38,7 @@
             padding: 40px 30px;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
             text-align: center;
-            z-index: 1; /* pastikan card di atas overlay */
+            z-index: 1;
         }
 
         .login-card img {
@@ -79,6 +80,46 @@
 
         .btn-login:hover {
             background-color: #03582C;
+            color: #fff;
+        }
+        
+        /* Mobile Responsive */
+        @media (max-width: 576px) {
+            .login-card {
+                margin: 40px 15px;
+                padding: 30px 20px;
+                border-radius: 15px;
+            }
+            
+            .login-card img {
+                width: 60px;
+            }
+            
+            .login-card h3 {
+                font-size: 1.3rem;
+            }
+            
+            .login-card p {
+                font-size: 13px;
+                margin-bottom: 20px;
+            }
+            
+            .form-control {
+                padding: 10px 35px;
+                font-size: 14px;
+            }
+            
+            .btn-login, .btn-secondary {
+                padding: 12px;
+                font-size: 14px;
+            }
+        }
+        
+        @media (max-width: 400px) {
+            .login-card {
+                margin: 30px 10px;
+                padding: 25px 15px;
+            }
         }
     </style>
 
@@ -105,15 +146,7 @@
         </form>
     </div>
 
-    <!-- Optional JavaScript; choose one of the two! -->
-
-    <!-- Option 1: Bootstrap Bundle with Popper -->
+    <!-- Bootstrap Bundle with Popper -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
-
-    <!-- Option 2: Separate Popper and Bootstrap JS -->
-    <!--
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js" integrity="sha384-7+zCNj/IqJ95wo16oMtfsKbZ9ccEh31eOz1HGyDuCQ6wgnyJNSYdrPa03rtR1zdB" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js" integrity="sha384-QJHtvGhmr9XOIpI6YVutG+2QOK9T+ZnN4kzFN1RtK3zEFEIsxhlmWl5/YESvpZ13" crossorigin="anonymous"></script>
-    -->
   </body>
 </html>
