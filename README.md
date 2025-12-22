@@ -1,61 +1,80 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Posyandu Remaja
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+## Deskripsi
+Posyandu Remaja adalah sebuah sistem manajemen berbasis web yang dirancang untuk membantu pengelolaan data dan pemantauan kesehatan remaja di posyandu. Aplikasi ini bertujuan untuk mempermudah kader dan petugas kesehatan dalam mencatat, melaporkan, dan menganalisis perkembangan kesehatan remaja secara digital.
 
-## About Laravel
+Sistem ini menggantikan pencatatan manual yang rentan hilang atau rusak, serta menyediakan fitur analisis data untuk mendeteksi risiko kesehatan lebih dini menggunakan teknologi pembelajaran mesin.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Fitur Utama
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+- **Manajemen Data Remaja**: Pencatatan biodata lengkap remaja yang terdaftar di posyandu.
+- **Pencatatan Pemeriksaan**: Merekam hasil pemeriksaan rutin seperti berat badan, tinggi badan, tekanan darah, dan lingkar lengan.
+- **Analisis Kesehatan**: Menggunakan algoritma pembelajaran mesin untuk membantu memberikan indikasi awal mengenai status kesehatan remaja berdasarkan data pemeriksaan.
+- **Laporan dan Ekspor**: Fitur untuk mencetak laporan pemeriksaan dalam format PDF dan mengekspor data rekapitulasi ke dalam format Excel.
+- **Dashboard Admin**: Halaman khusus untuk pengelola sistem guna memantau statistik dan mengelola seluruh data.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## Teknologi yang Digunakan
 
-## Learning Laravel
+Aplikasi ini dibangun menggunakan teknologi web modern untuk memastikan performa yang cepat dan tampilan yang responsif.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+- **Framework Backend**: Laravel 12 (PHP)
+- **Frontend**: Blade Templating Engine & Livewire
+- **Styling**: Tailwind CSS 4
+- **Database**: MySQL
+- **Machine Learning**: Rubix ML / PHP-ML
+- **Laporan**: DomPDF (PDF) & Maatwebsite Excel (Excel)
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+## Panduan Instalasi
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+Ikuti langkah-langkah berikut untuk menjalankan proyek ini di komputer lokal Anda.
 
-## Laravel Sponsors
+### Prasyarat
+Pastikan Anda telah menginstal perangkat lunak berikut:
+- PHP (versi 8.2 atau lebih baru)
+- Composer
+- Node.js dan NPM
+- MySQL
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+### Langkah-langkah
 
-### Premium Partners
+1. **Clone Repositori**
+   Unduh kode sumber proyek ini ke komputer Anda.
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+2. **Instal Dependensi PHP**
+   Jalankan perintah berikut di terminal untuk menginstal pustaka yang dibutuhkan oleh Laravel:
+   ```bash
+   composer install
+   ```
 
-## Contributing
+3. **Instal Dependensi Frontend**
+   Jalankan perintah berikut untuk menginstal dan membangun aset tampilan:
+   ```bash
+   npm install
+   npm run build
+   ```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+4. **Konfigurasi Lingkungan**
+   Salin file konfigurasi contoh dan sesuaikan dengan pengaturan database Anda:
+   ```bash
+   cp .env.example .env
+   ```
+   Buka file `.env` dan atur koneksi database (DB_DATABASE, DB_USERNAME, DB_PASSWORD).
 
-## Code of Conduct
+5. **Generate Kunci Aplikasi**
+   ```bash
+   php artisan key:generate
+   ```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+6. **Migrasi Database**
+   Buat tabel-tabel yang diperlukan di dalam database:
+   ```bash
+   php artisan migrate
+   ```
 
-## Security Vulnerabilities
+7. **Jalankan Aplikasi**
+   Mulai server lokal untuk mengakses aplikasi:
+   ```bash
+   php artisan serve
+   ```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+Aplikasi sekarang dapat diakses melalui browser di alamat yang muncul di terminal (biasanya http://127.0.0.1:8000).
